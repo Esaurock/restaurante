@@ -12,26 +12,31 @@ class Request
     {
         $uri = $_SERVER['REQUEST_URI'];
         $segment = explode("/", $uri);
-        
+
         // llamando al controlador
         $controller = $segment[1];
         $this->setController($controller);
 
-        // llamando al setMethod
-
         // llamamndo setId 
         $id = $segment[2];
         $this->setId($id);
+
+        // llamando al setMethod
+        $method = $_SERVER['REQUEST_METHOD'];
+        $this->setMethod($method);
+
     }
 
     public function send()
     {
         echo "<p>Controlador</p>";
         var_dump($this->getController());
-    
+
         echo "<p>Id</p>";
         var_dump($this->getId());
-    
+
+        echo "<p>Method</p>";
+        var_dump($this->getMethod());
     }
 
     public function getController()
@@ -55,7 +60,17 @@ class Request
     }
     public function setMethod($method)
     {
-        $this->method = $method;
+        if ($method == "GET") {
+            if ($this->getId() == 0) {
+                $this->method = "index";
+            } else {
+                $this->method = "show";
+            }
+        }
+
+        if ($method == "POST") $this->method = "store";
+        if ($method == "PUT" || $method == "PATCH") $this->method = "update";
+        if ($method == "DELETE") $this->method = "destroy";
     }
 
     public function getId()
